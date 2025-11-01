@@ -203,15 +203,19 @@ apt-get install -y \
     apt-transport-https \
     unzip bzip2 imagemagick
 
-# Installation de PHP 8.2
-log_info "Installation de PHP 8.2..."
+# Installation de PHP (version par défaut du système)
+log_info "Installation de PHP (version par défaut du système)..."
 apt-get install -y \
-    php8.2 php8.2-fpm php8.2-cli \
-    php8.2-gd php8.2-mysql php8.2-pgsql php8.2-curl \
-    php8.2-mbstring php8.2-intl php8.2-gmp \
-    php8.2-bcmath php8.2-xml php8.2-zip \
-    php8.2-imagick php8.2-redis php8.2-apcu \
-    php8.2-ldap php8.2-bz2
+    php php-fpm php-cli \
+    php-gd php-mysql php-pgsql php-curl \
+    php-mbstring php-intl php-gmp \
+    php-bcmath php-xml php-zip \
+    php-imagick php-redis php-apcu \
+    php-ldap php-bz2
+
+# Détection de la version de PHP installée
+PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;")
+log_info "Version PHP détectée: $PHP_VERSION"
 
 # Installation de la base de données
 if [ "$DB_TYPE" = "mysql" ]; then
@@ -237,7 +241,7 @@ systemctl start redis-server
 
 # Installation d'Apache
 log_info "Installation d'Apache..."
-apt-get install -y apache2 libapache2-mod-php8.2
+apt-get install -y apache2 libapache2-mod-php
 
 # Activation des modules Apache nécessaires
 log_info "Activation des modules Apache..."
@@ -294,7 +298,7 @@ chown -R www-data:www-data "$DATA_DIR"
 
 # Configuration PHP
 log_info "Configuration PHP..."
-PHP_INI="/etc/php/8.2/fpm/php.ini"
+PHP_INI="/etc/php/$PHP_VERSION/fpm/php.ini"
 sed -i 's/memory_limit = .*/memory_limit = 512M/' "$PHP_INI"
 sed -i 's/upload_max_filesize = .*/upload_max_filesize = 10G/' "$PHP_INI"
 sed -i 's/post_max_size = .*/post_max_size = 10G/' "$PHP_INI"
@@ -488,7 +492,7 @@ sudo -u www-data php occ background:cron
 
 # Redémarrage des services
 log_info "Redémarrage des services..."
-systemctl restart php8.2-fpm
+systemctl restart php$PHP_VERSION-fpm
 systemctl restart apache2
 
 # Création du fichier d'informations
