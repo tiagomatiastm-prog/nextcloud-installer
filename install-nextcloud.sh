@@ -200,8 +200,8 @@ apt-get upgrade -y
 log_info "Installation des dépendances de base..."
 apt-get install -y \
     wget curl sudo gnupg2 ca-certificates lsb-release \
-    apt-transport-https software-properties-common \
-    unzip bzip2 libmagickcore-6.q16-6-extra
+    apt-transport-https \
+    unzip bzip2 imagemagick
 
 # Installation de PHP 8.2
 log_info "Installation de PHP 8.2..."
