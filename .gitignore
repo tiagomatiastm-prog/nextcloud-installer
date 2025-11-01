@@ -1,0 +1,20 @@
+# Credentials et informations sensibles
+*-info.txt
+*-credentials.txt
+*-credentials.md
+
+# Logs
+*.log
+
+# Fichiers temporaires
+*.tmp
+*.swp
+*.swo
+*~
+
+# Inventaire Ansible personnalisé (peut contenir des IPs/credentials)
+inventory.ini
+
+# Sauvegardes
+*.bak
+backup/

@@ -1,0 +1,49 @@
+---
+- name: Déploiement de Nextcloud Server Community Edition
+  hosts: nextcloud_servers
+  become: true
+  vars:
+    nextcloud_domain: "{{ lookup('env', 'NC_DOMAIN') | default('nextcloud.local', true) }}"
+    nextcloud_email: "{{ lookup('env', 'NC_EMAIL') | default('admin@localhost', true) }}"
+    nextcloud_reverse_proxy: "{{ lookup('env', 'NC_REVERSE_PROXY') | default('false', true) }}"
+    nextcloud_bind_address: "{{ lookup('env', 'NC_BIND_ADDRESS') | default('', true) }}"
+    nextcloud_port: "{{ lookup('env', 'NC_PORT') | default('80', true) }}"
+    nextcloud_db_type: "{{ lookup('env', 'NC_DB_TYPE') | default('mysql', true) }}"
+    nextcloud_install_office: "{{ lookup('env', 'NC_INSTALL_OFFICE') | default('false', true) }}"
+    nextcloud_install_talk: "{{ lookup('env', 'NC_INSTALL_TALK') | default('false', true) }}"
+    nextcloud_data_dir: "{{ lookup('env', 'NC_DATA_DIR') | default('/var/www/nextcloud/data', true) }}"
+
+  tasks:
+    - name: Télécharger le script d'installation
+      get_url:
+        url: https://raw.githubusercontent.com/tiagomatiastm-prog/nextcloud-installer/master/install-nextcloud.sh
+        dest: /tmp/install-nextcloud.sh
+        mode: '0755'
+
+    - name: Construire la commande avec les arguments
+      set_fact:
+        install_command: >-
+          /tmp/install-nextcloud.sh
+          --domain {{ nextcloud_domain }}
+          --email {{ nextcloud_email }}
+          {% if nextcloud_reverse_proxy == 'true' %}--reverse-proxy{% endif %}
+          {% if nextcloud_bind_address %}--bind-address {{ nextcloud_bind_address }}{% endif %}
+          --port {{ nextcloud_port }}
+          --db-type {{ nextcloud_db_type }}
+          {% if nextcloud_install_office == 'true' %}--install-office{% endif %}
+          {% if nextcloud_install_talk == 'true' %}--install-talk{% endif %}
+          --data-dir {{ nextcloud_data_dir }}
+
+    - name: Exécuter l'installation de Nextcloud
+      command: "{{ install_command }}"
+      args:
+        creates: /var/www/nextcloud/occ
+
+    - name: Afficher le fichier d'informations
+      command: cat ~/nextcloud-info.txt
+      register: nextcloud_info
+      changed_when: false
+
+    - name: Afficher les informations d'installation
+      debug:
+        var: nextcloud_info.stdout_lines
