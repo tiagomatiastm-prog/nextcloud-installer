@@ -273,7 +273,7 @@ fi
 
 # Téléchargement de Nextcloud
 log_info "Téléchargement de Nextcloud..."
-NC_VERSION=$(curl -s https://download.nextcloud.com/server/releases/ | grep -oP 'latest-[0-9]+\.tar\.bz2' | head -1)
+NC_VERSION=$(curl -s https://download.nextcloud.com/server/releases/ | grep -oP 'latest-[0-9]+\.tar\.bz2' | sort -V | uniq | tail -1)
 if [ -z "$NC_VERSION" ]; then
     NC_VERSION="latest.tar.bz2"
 fi
