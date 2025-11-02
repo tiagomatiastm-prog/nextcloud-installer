@@ -7,7 +7,7 @@ Installation automatisée de **Nextcloud Server Community Edition** sur **Debian
 - ✅ Installation complète de Nextcloud Server
 - ✅ Support de **Nextcloud Office** (suite bureautique avec Collabora Online)
 - ✅ Support de **Nextcloud Talk** (visioconférence et messagerie)
-- ✅ Configuration Apache + PHP 8.2
+- ✅ Configuration Apache + PHP (version par défaut du système)
 - ✅ Base de données MariaDB ou PostgreSQL
 - ✅ Cache Redis pour performances optimales
 - ✅ Support du reverse proxy (Nginx, Caddy, Traefik, HAProxy)
@@ -95,8 +95,8 @@ curl -fsSL https://raw.githubusercontent.com/tiagomatiastm-prog/nextcloud-instal
 ## 🔧 Composants Installés
 
 ### Nextcloud Server
-- **Version** : Dernière version stable
-- **PHP** : 8.2 avec extensions nécessaires
+- **Version** : Dernière version stable (Nextcloud 32)
+- **PHP** : Version par défaut du système (PHP 8.4 sur Debian 13) avec extensions nécessaires
 - **Serveur Web** : Apache avec mod_rewrite
 - **Cache** : Redis + APCu
 - **Base de données** : MariaDB ou PostgreSQL
